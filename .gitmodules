@@ -1,0 +1,12 @@
+[submodule "thirdparty/sleepy-discord"]
+	path = thirdparty/sleepy-discord
+	url = https://github.com/yourWaifu/sleepy-discord
+[submodule "thirdparty/tinyxml2"]
+	path = thirdparty/tinyxml2
+	url = https://github.com/leethomason/tinyxml2
+[submodule "thirdparty/glslang"]
+	path = thirdparty/glslang
+	url = https://github.com/KhronosGroup/glslang
+[submodule "thirdparty/stb"]
+	path = thirdparty/stb
+	url = https://github.com/nothings/stb
