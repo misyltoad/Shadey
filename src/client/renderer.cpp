@@ -105,7 +105,7 @@ void main() {
         code = "#version 330\n" + code;
     }
 
-    if (code.find("#include") != std::string::npos)
+    if (code.find("include") != std::string::npos)
       throw std::runtime_error("Nuh uh uh!");
   }
 
