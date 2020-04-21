@@ -8,6 +8,7 @@ namespace shadey {
   public:
     using SleepyDiscord::DiscordClient::DiscordClient;
 
+    void onReady(std::string* jsonMessage) override;
     void onMessage(SleepyDiscord::Message message) override;
   };
 

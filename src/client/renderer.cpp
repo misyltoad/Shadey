@@ -5,6 +5,7 @@
 #include <vector>
 #include <array>
 #include <sstream>
+#include <atomic>
 
 #include "string_helpers.h"
 
@@ -48,7 +49,8 @@ void main() {
 
 
   Renderer::~Renderer() {
-    vkDeviceWaitIdle(m_device);
+    if (m_device != VK_NULL_HANDLE)
+      vkDeviceWaitIdle(m_device);
 
     if (m_commandBuffer != VK_NULL_HANDLE)
       vkFreeCommandBuffers(m_device, m_commandPool, 1, &m_commandBuffer);
@@ -97,9 +99,14 @@ void main() {
   }
 
 
-  void Renderer::fixCode(std::string& code) {
-    if (code.find("#version") == std::string::npos)
-      code = "#version 330\n" + code;
+  void Renderer::fixCode(bool hlsl, std::string& code) {
+    if (!hlsl) {
+      if (code.find("#version") == std::string::npos)
+        code = "#version 330\n" + code;
+    }
+
+    if (code.find("#include") != std::string::npos)
+      throw std::runtime_error("Nuh uh uh!");
   }
 
 
@@ -150,8 +157,11 @@ void main() {
           if (options.resolution[0] == 0 || options.resolution[1] == 0)
             throw std::runtime_error("Can't have a resolution with an extent that is 0");
 
-          if (options.resolution[0] > 8192 || options.resolution[1] > 8192)
-            throw std::runtime_error("Can't have a resolution with an extent greater than 8192");
+          if (options.resolution[0] > 16384 || options.resolution[1] > 16384)
+            throw std::runtime_error("Can't have a resolution with an extent greater than 16384");
+
+          if (options.resolution[0] * options.resolution[1] > 4096 * 2048)
+            throw std::runtime_error("Can't have a resolution with an area greater than 4096 * 2048");
         }
       }
     }
@@ -160,8 +170,8 @@ void main() {
   }
 
 
-  std::string Renderer::init(std::string glslFrag) {
-    fixCode(glslFrag);
+  std::string Renderer::init(bool hlsl, std::string glslFrag) {
+    fixCode(hlsl, glslFrag);
 
     auto options = getRendererOptions(glslFrag);
 
@@ -346,8 +356,8 @@ void main() {
 
     // Create shaders
     {
-      auto CreateModule = [&](bool fragment, const std::string& glsl) {
-        auto spv = compileShader(fragment, glsl);
+      auto CreateModule = [&](bool hlsl, bool fragment, const std::string& glsl) {
+        auto spv = compileShader(hlsl, fragment, glsl);
 
         VkShaderModuleCreateInfo moduleInfo = {
           .sType    = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
@@ -362,8 +372,8 @@ void main() {
         return shaderModule;
       };
 
-      m_vertModule = CreateModule(false, g_vertexShaders[options.vertexType]);
-      m_fragModule = CreateModule(true, glslFrag);
+      m_vertModule = CreateModule(false, false, g_vertexShaders[options.vertexType]);
+      m_fragModule = CreateModule(hlsl, true, glslFrag);
     }
 
     // Create pipeline layout
@@ -623,13 +633,11 @@ void main() {
 
       vkQueueWaitIdle(m_queue);
 
-      static uint32_t index = 0;
+      static std::atomic<uint32_t> index = 0;
 
-      std::string name = "temp_" + std::to_string(index) + std::string(".png");
+      std::string name = "temp_" + std::to_string(index.fetch_add(1)) + std::string(".png");
 
       stbi_write_png(name.c_str(), options.resolution[0], options.resolution[1], 4, m_bufferMemPtr, 4 * options.resolution[0]);
-
-      index++;
 
       return name;
     }

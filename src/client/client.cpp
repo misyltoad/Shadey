@@ -5,6 +5,10 @@
 
 namespace shadey {
 
+  void ShadeyClient::onReady(std::string* jsonMessage) {
+    //updateStatus("Vulkan 1.2");
+  }
+
   void ShadeyClient::onMessage(SleepyDiscord::Message message) {
     try {
       if (message.author.ID == getCurrentUser().cast().ID)

@@ -26,9 +26,9 @@ namespace shadey {
 
     ~Renderer();
 
-    std::string init(std::string glslFrag);
+    std::string init(bool hlsl, std::string glslFrag);
 
-    static void fixCode(std::string& code);
+    static void fixCode(bool hlsl, std::string& code);
 
     static RendererOptions getRendererOptions(const std::string& code);
 

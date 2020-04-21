@@ -113,11 +113,11 @@ namespace shadey {
       /* .generalConstantMatrixVectorIndexing = */ 1,
   }};
 
-  std::vector<uint8_t> compileShader(bool fragment, const std::string& glsl) {
+  std::vector<uint8_t> compileShader(bool hlsl, bool fragment, const std::string& glsl) {
 	glslang_resource_t resource = DefaultResource;
 
     const glslang_input_t input = {
-	  .language = GLSLANG_SOURCE_GLSL,
+	  .language = hlsl ? GLSLANG_SOURCE_HLSL : GLSLANG_SOURCE_GLSL,
 	  .stage = fragment ? GLSLANG_STAGE_FRAGMENT : GLSLANG_STAGE_VERTEX,
 	  .client = GLSLANG_CLIENT_VULKAN,
 	  .client_version = GLSLANG_TARGET_VULKAN_1_1,

@@ -1,5 +1,6 @@
 #include "hooks.h"
 #include "command_helpers.h"
+#include "string_helpers.h"
 
 #include "tinyxml2.h"
 
@@ -142,6 +143,8 @@ namespace shadey {
         if (!strcmp(name, lookupStruct.c_str())) {
           WriteVulkanStruct(type, stream);
 
+          stream << "https://www.khronos.org/registry/vulkan/specs/1.2-extensions/man/html/" << lookupStruct << ".html";
+
           return true;
         }
       }
@@ -157,7 +160,7 @@ namespace shadey {
     using ShadeyCommand::ShadeyCommand;
 
     void onCommand(const ShadeyCommandContext& ctx) override {
-      auto name = std::string(ctx.argsString());
+      auto name = trim(std::string(ctx.argsString()));
 
       std::stringstream stream;
       if (!LookupVulkanType(name, stream)) {
@@ -165,7 +168,11 @@ namespace shadey {
         return;
       }
 
-      reply(ctx, stream.str());
+      std::string str = stream.str();
+      if (str.length() > 1500)
+        throw std::runtime_error("Too big, sorry!");
+
+      reply(ctx, str);
     }
   };
 

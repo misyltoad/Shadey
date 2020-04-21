@@ -13,12 +13,18 @@ namespace shadey {
     void onMessage(ShadeyClient& client, SleepyDiscord::Message message) final {
       // Extract the code from the message.
       std::string code;
+      bool hlsl = false;
       {
         std::string content = message.content;
 
         size_t codeStart = content.find("```glsl");
-        if (codeStart == std::string::npos)
-          return;
+        if (codeStart == std::string::npos) {
+          hlsl = true;
+          codeStart = content.find("```hlsl");
+
+          if (codeStart == std::string::npos)
+            return;
+        }
 
         content = content.substr(codeStart + strlen("```glsl"));
 
@@ -35,10 +41,17 @@ namespace shadey {
         replace(code, "\\n", "\n");
       }
 
-      Renderer renderer;
-      std::string filename = renderer.init(code);
+      client.sendTyping(message.channelID);
 
-      client.uploadFile(message.channelID, filename, "");
+      Renderer renderer;
+      std::string filename = renderer.init(hlsl, code);
+
+      try {
+        client.uploadFile(message.channelID, filename, "");
+      }
+      catch (const std::exception& e) {
+        client.sendMessage(message.channelID, filename, "File is too big!");
+      }
     }
   };
 
