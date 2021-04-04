@@ -93,6 +93,7 @@ namespace shadey {
         auto memberName   = member->FirstChildElement("name");
         auto memberValues = member->Attribute("values");
         auto memberOptional = member->Attribute("optional");
+        auto memberLen = member->Attribute("len");
 
         if (memberType != nullptr && memberName != nullptr) {
           auto comment = member->FirstChildElement("comment");
@@ -100,17 +101,28 @@ namespace shadey {
             stream << "\t// " << comment->GetText() << "\n";
 
           if (memberOptional != nullptr) {
+            bool lengthBased = false;
             const char *optionalType = NULL;
             if (!strcmp(memberOptional, "true"))
-              optionalType = "Optional";
+              optionalType = "May always be NULL/0.";
             else if (!strcmp(memberOptional, "true,false") || !strcmp(memberOptional, "true, false"))
-              optionalType = "May be NULL if count is 0";
+              optionalType = "Children must be valid";
             else if (!strcmp(memberOptional, "false,true") || !strcmp(memberOptional, "false, true"))
               optionalType = "Optional values, pointer required";
+            else if (memberLen != nullptr){
+              lengthBased = true;
+              optionalType = "May be NULL if ";
+            }
 
             if (optionalType)
               stream << "\t// Optional: " << optionalType << "\n";
+
+            if (lengthBased)
+              stream << memberLen << " is 0";
           }
+
+          if (memberLen != nullptr)
+            stream << "\t// Length: " << memberLen << "\n";
 
           if (memberValues != nullptr)
             stream << "\t// Values: " << memberValues << "\n";
