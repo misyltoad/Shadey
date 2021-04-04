@@ -95,37 +95,27 @@ namespace shadey {
         auto memberOptional = member->Attribute("optional");
 
         if (memberType != nullptr && memberName != nullptr) {
-          bool doneComment = false;
+          auto comment = member->FirstChildElement("comment");
+          if (comment != nullptr)
+            stream << "\t// " << comment->GetText() << "\n";
 
           if (memberOptional != nullptr) {
             const char *optionalType = NULL;
-            if (memberOptional == "true")
+            if (!strcmp(memberOptional, "true"))
               optionalType = "Optional";
-            else if (memberOptional == "true,false" || memberOptional == "true, false")
+            else if (!strcmp(memberOptional, "true,false") || !strcmp(memberOptional, "true, false"))
               optionalType = "May be NULL if count is 0";
-            else if (memberOptional == "false,true" || memberOptional == "false, true")
+            else if (!strcmp(memberOptional, "false,true") || !strcmp(memberOptional, "false, true"))
               optionalType = "Optional values, pointer required";
 
-            if (optionalType) {
-              if (!doneComment)
-                stream << "  // ";
-              else
-                stream << " - ";
-              stream << " " << optionalType;
-              doneComment = true;
-            }
+            if (optionalType)
+              stream << "\t// Optional: " << optionalType << "\n";
           }
 
-          if (memberValues != nullptr) {
-            if (!doneComment)
-              stream << "  // ";
-            else
-              stream << " - ";
-            stream << "Values: " << memberValues;
-            doneComment = true;
-          }
+          if (memberValues != nullptr)
+            stream << "\t// Values: " << memberValues << "\n";
 
-          stream << "  ";
+          stream << "\t";
           if (StringContains(PreviousText(memberType), "const")) stream << "const ";
           stream << memberType->GetText();
           if (StringContains(PreviousText(memberName), "*"))     stream << "*";
@@ -140,15 +130,6 @@ namespace shadey {
             stream << " ";
 
           stream << "  " << memberName->GetText() << ";";
-
-          auto comment = member->FirstChildElement("comment");
-          if (comment != nullptr) {
-            spaces = maxNameLength - strlen(memberName->GetText());
-            for (size_t i = 0; i < spaces; i++)
-              stream << " ";
-
-            stream << " // " << comment->GetText();
-          }
 
           stream << "\n";
         }
