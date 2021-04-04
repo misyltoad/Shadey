@@ -133,11 +133,14 @@ void main() {
         if (line.length() == equals)
           continue;
 
-        std::string param = trim(line.substr(colon + 1, equals - colon - 1));
-        std::string value = trim(line.substr(equals + 1));
+        std::string param = line.substr(colon + 1, equals - colon - 1);
+        trim(param);
+
+        std::string value = line.substr(equals + 1);
+        trim(value);
 
         if (param == "clearColor") {
-          sscanf_s(value.c_str(), "%f %f %f %f",
+          sscanf(value.c_str(), "%f %f %f %f",
             &options.clearColor.color.float32[0],
             &options.clearColor.color.float32[1],
             &options.clearColor.color.float32[2],
@@ -150,7 +153,7 @@ void main() {
         }
 
         if (param == "resolution") {
-          sscanf_s(value.c_str(), "%u %u",
+          sscanf(value.c_str(), "%u %u",
             &options.resolution[0],
             &options.resolution[1]);
 

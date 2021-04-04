@@ -5,13 +5,14 @@
 
 namespace shadey {
 
-  void ShadeyClient::onReady(std::string* jsonMessage) {
-    //updateStatus("Vulkan 1.2");
+  void ShadeyClient::onReady(SleepyDiscord::Ready ready) {
+    m_self = ready.user;
+    updateStatus("Vulkan 1.2");
   }
 
   void ShadeyClient::onMessage(SleepyDiscord::Message message) {
     try {
-      if (message.author.ID == getCurrentUser().cast().ID)
+      if (message.author.ID == m_self.ID)
         return;
 
       auto& hooks = ShadeyGlobalHookList::instance()->hooks();

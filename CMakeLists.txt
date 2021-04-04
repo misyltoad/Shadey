@@ -29,7 +29,7 @@ add_executable(shadey
     src/client/commands/ping.cpp
     src/client/commands/shader.cpp
     src/client/commands/vulkan_types.cpp)
-target_link_libraries(shadey sleepy-discord tinyxml2 glslang ${Vulkan_LIBRARY})
+target_link_libraries(shadey sleepy-discord tinyxml2 SPIRV glslang ${Vulkan_LIBRARY})
 target_compile_definitions(shadey PRIVATE SHADEY_CLIENT)
 target_include_directories(shadey PUBLIC src/client thirdparty/stb ${Vulkan_INCLUDE_DIRS})
 set_property(TARGET shadey PROPERTY CXX_STANDARD 20)

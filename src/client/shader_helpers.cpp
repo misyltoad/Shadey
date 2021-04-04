@@ -2,6 +2,7 @@
 
 #include <exception>
 #include <stdexcept>
+#include <cstring>
 
 #include <glslang/Include/glslang_c_interface.h>
 
@@ -100,6 +101,7 @@ namespace shadey {
   /* .maxTaskWorkGroupSizeY_NV = */ 1,
   /* .maxTaskWorkGroupSizeZ_NV = */ 1,
   /* .maxMeshViewCountNV = */ 4,
+  /* .maxDualSourceDrawBuffersEXT = */ 1,
 
   /* .limits = */ {
       /* .nonInductiveForLoops = */ 1,

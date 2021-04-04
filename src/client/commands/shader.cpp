@@ -50,7 +50,7 @@ namespace shadey {
         client.uploadFile(message.channelID, filename, "");
       }
       catch (const std::exception& e) {
-        client.sendMessage(message.channelID, filename, "File is too big!");
+        throw std::runtime_error("File was too big to upload!");
       }
     }
   };

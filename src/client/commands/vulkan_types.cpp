@@ -160,7 +160,8 @@ namespace shadey {
     using ShadeyCommand::ShadeyCommand;
 
     void onCommand(const ShadeyCommandContext& ctx) override {
-      auto name = trim(std::string(ctx.argsString()));
+      auto name = std::string(ctx.argsString());
+      trim(name);
 
       std::stringstream stream;
       if (!LookupVulkanType(name, stream)) {
