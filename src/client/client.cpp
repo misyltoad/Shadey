@@ -7,7 +7,7 @@ namespace shadey {
 
   void ShadeyClient::onReady(SleepyDiscord::Ready ready) {
     m_self = ready.user;
-    updateStatus("Vulkan 1.2");
+    updateStatus("Vulkan 1.1");
   }
 
   void ShadeyClient::onMessage(SleepyDiscord::Message message) {
