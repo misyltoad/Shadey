@@ -92,10 +92,38 @@ namespace shadey {
         auto memberType   = member->FirstChildElement("type");
         auto memberName   = member->FirstChildElement("name");
         auto memberValues = member->Attribute("values");
+        auto memberOptional = member->Attribute("optional");
 
         if (memberType != nullptr && memberName != nullptr) {
-          if (memberValues != nullptr)
-            stream << "  // Values: " << memberValues << "\n";
+          bool doneComment = false;
+
+          if (memberOptional != nullptr) {
+            const char *optionalType = NULL;
+            if (memberOptional == "true")
+              optionalType = "Optional";
+            else if (memberOptional == "true,false" || memberOptional == "true, false")
+              optionalType = "May be NULL if count is 0";
+            else if (memberOptional == "false,true" || memberOptional == "false, true")
+              optionalType = "Optional values, pointer required";
+
+            if (optionalType) {
+              if (!doneComment)
+                stream << "  // ";
+              else
+                stream << " - ";
+              stream << " " << optionalType;
+              doneComment = true;
+            }
+          }
+
+          if (memberValues != nullptr) {
+            if (!doneComment)
+              stream << "  // ";
+            else
+              stream << " - ";
+            stream << "Values: " << memberValues;
+            doneComment = true;
+          }
 
           stream << "  ";
           if (StringContains(PreviousText(memberType), "const")) stream << "const ";
