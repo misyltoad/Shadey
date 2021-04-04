@@ -60,8 +60,8 @@ namespace shadey {
   void WriteVulkanStruct(const tinyxml2::XMLElement* type, std::stringstream& stream) {
     const char* name = type->Attribute("name");
 
-    stream << "```cpp\\n";
-    stream << "struct " << name << " {" << "\\n";
+    stream << "```cpp\n";
+    stream << "struct " << name << " {" << "\n";
 
     // Loop through members to find max lengths
     size_t maxTypeLength = 0;
@@ -95,7 +95,7 @@ namespace shadey {
 
         if (memberType != nullptr && memberName != nullptr) {
           if (memberValues != nullptr)
-            stream << "  // Values: " << memberValues << "\\n";
+            stream << "  // Values: " << memberValues << "\n";
 
           stream << "  ";
           if (StringContains(PreviousText(memberType), "const")) stream << "const ";
@@ -122,14 +122,14 @@ namespace shadey {
             stream << " // " << comment->GetText();
           }
 
-          stream << "\\n";
+          stream << "\n";
         }
 
         member = member->NextSiblingElement("member");
       }
     }
 
-    stream << "};\\n";
+    stream << "};\n";
     stream << "```";
   }
 
