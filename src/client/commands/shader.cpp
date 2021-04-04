@@ -37,8 +37,6 @@ namespace shadey {
 
         if (code.empty())
           return;
-
-        replace(code, "\\n", "\n");
       }
 
       client.sendTyping(message.channelID);

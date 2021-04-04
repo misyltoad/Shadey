@@ -21,8 +21,6 @@ namespace shadey {
     }
     catch (const std::exception& e) {
       std::string exception = e.what();
-      replace(exception, "\n", "\\n");
-      replace(exception, "\"", "\\\"");
 
       if (exception.length() > 1500)
         exception = exception.substr(0, 1500);
