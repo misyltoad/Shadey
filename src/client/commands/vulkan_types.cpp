@@ -115,10 +115,12 @@ namespace shadey {
             }
 
             if (optionalType)
-              stream << "\t// Optional: " << optionalType << "\n";
+              stream << "\t// Optional: " << optionalType;
 
             if (lengthBased)
               stream << memberLen << " is 0";
+
+            stream << "\n";
           }
 
           if (memberLen != nullptr)
