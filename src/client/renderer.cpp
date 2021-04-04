@@ -107,6 +107,9 @@ void main() {
 
     if (code.find("include") != std::string::npos)
       throw std::runtime_error("Nuh uh uh!");
+
+    if (code.find("buffer_reference") != std::string::npos)
+      throw std::runtime_error("Nuh uh uh!");
   }
 
 
