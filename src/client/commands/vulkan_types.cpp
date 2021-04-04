@@ -100,14 +100,14 @@ namespace shadey {
           if (comment != nullptr)
             stream << "\t// " << comment->GetText() << "\n";
 
-          if (memberOptional != nullptr) {
+          {
             bool lengthBased = false;
             const char *optionalType = NULL;
-            if (!strcmp(memberOptional, "true"))
+            if (memberOptional && !strcmp(memberOptional, "true"))
               optionalType = "May always be NULL/0.";
-            else if (!strcmp(memberOptional, "true,false") || !strcmp(memberOptional, "true, false"))
+            else if (memberOptional && (!strcmp(memberOptional, "true,false") || !strcmp(memberOptional, "true, false")))
               optionalType = "Children must be valid";
-            else if (!strcmp(memberOptional, "false,true") || !strcmp(memberOptional, "false, true"))
+            else if (memberOptional && (!strcmp(memberOptional, "false,true") || !strcmp(memberOptional, "false, true")))
               optionalType = "Optional values, pointer required";
             else if (memberLen != nullptr){
               lengthBased = true;
